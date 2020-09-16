@@ -10,11 +10,11 @@ import java.util.Properties;
 
 @SpringBootApplication
 @EnableConfigurationProperties(AppProperties.class)
-public class ExtendedMongoSkeletonApplication {
+public class FatodoImageServiceApplication {
 
     public static void main(String[] args) {
         Properties defaultProfileProperties = AppProfileUtils.getDefaultProfile();
-        SpringApplication app = new SpringApplication(ExtendedMongoSkeletonApplication.class);
+        SpringApplication app = new SpringApplication(FatodoImageServiceApplication.class);
         app.setDefaultProperties(defaultProfileProperties);
         app.run();
     }

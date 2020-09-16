@@ -1,2 +1,2 @@
-# Fatodo extended-mongo-skeleton
-Spring app that is used for development of complex microservices with mongodb.
+# Fatodo image-service
+Spring app for image service

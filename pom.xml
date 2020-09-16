@@ -9,17 +9,17 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.persoff68.fatodo</groupId>
-    <artifactId>extendedmongoskeleton</artifactId>
+    <artifactId>imageservice</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>extended-mongo-skeleton</name>
-    <description>Extended mongo skeleton for Fatodo</description>
+    <name>fatodo-image-service</name>
+    <description>Image service for Fatodo</description>
 
     <properties>
         <!-- Common variables -->
         <jar.name>fatodo</jar.name>
         <maven.repo.url/>
         <!-- Classes and packages -->
-        <main.class>com.persoff68.fatodo.ExtendedMongoSkeletonApplication</main.class>
+        <main.class>com.persoff68.fatodo.FatodoImageServiceApplication</main.class>
         <root.package>com.persoff68.fatodo</root.package>
         <contract.package>com.persoff68.fatodo.contract</contract.package>
         <!-- Dependency versions -->
