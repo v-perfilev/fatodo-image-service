@@ -1,46 +1,33 @@
 package com.persoff68.fatodo.service.validator;
 
 import com.persoff68.fatodo.service.exception.ImageInvalidException;
+import com.persoff68.fatodo.service.util.ImageUtils;
+import org.apache.tika.Tika;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
 
 public class ImageValidator {
+
+    private static final Tika tika = new Tika();
 
     private final BufferedImage image;
     private final String format;
     private final int size;
 
-    public ImageValidator(InputStream inputStream) {
-        try {
-            ImageInputStream input = ImageIO.createImageInputStream(inputStream);
-            Iterator<ImageReader> readers = ImageIO.getImageReaders(input);
-            if (readers.hasNext()) {
-                throw new ImageInvalidException("No image");
-            }
-            ImageReader reader = readers.next();
-            reader.setInput(input);
-            image = reader.read(0);
-            format = reader.getFormatName();
-            size = inputStream.readAllBytes().length;
-        } catch (IOException e) {
-            throw new ImageInvalidException("Broken image");
-        }
+    private ImageValidator(BufferedImage image, byte[] bytes) {
+        this.image = image;
+        this.format = tika.detect(bytes);
+        this.size = bytes.length;
     }
 
-    public void validateSize(int minSize, int maxSize) {
+    private void validateSize(int minSize, int maxSize) {
         if (size < minSize || size > maxSize) {
             throw new ImageInvalidException("Image size validation failed");
         }
     }
 
-
-    public void validateDimensions(int minWidth, int maxWidth, int minHeight, int maxHeight) {
+    private void validateDimensions(int minWidth, int maxWidth, int minHeight, int maxHeight) {
         int width = image.getWidth();
         int height = image.getHeight();
         if (width < minWidth || width > maxWidth || height < minHeight || height > maxHeight) {
@@ -48,7 +35,7 @@ public class ImageValidator {
         }
     }
 
-    public void validateRatio(int x, int y) {
+    private void validateRatio(int x, int y) {
         int width = image.getWidth();
         int height = image.getHeight();
         float ratio = (float) width / height;
@@ -59,10 +46,20 @@ public class ImageValidator {
         }
     }
 
-    public void validateExtension(String requiredFormat) {
+    private void validateExtension(String requiredFormat) {
         if (!format.equalsIgnoreCase(requiredFormat)) {
             throw new ImageInvalidException("Image extension validation failed");
         }
+    }
+
+    public static void validateGroupImage(MultipartFile content) {
+        BufferedImage bufferedImage = ImageUtils.getBufferedImage(content);
+        byte[] bytes = ImageUtils.getBytes(content);
+        ImageValidator validator = new ImageValidator(bufferedImage, bytes);
+        validator.validateExtension("image/jpeg");
+        validator.validateDimensions(100, 500, 100, 500);
+        validator.validateRatio(1, 1);
+        validator.validateSize(1024, 1024 * 512);
     }
 
 }

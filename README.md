@@ -1,2 +1,2 @@
-# Fatodo image-service
-Spring app for image service
+# Fatodo imageFile-service
+Spring app for imageFile service
