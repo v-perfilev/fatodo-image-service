@@ -13,6 +13,9 @@ public class ResizeUtils {
     private static final int MAX_WIDTH = 1000;
     private static final int THUMBNAIL_WIDTH = 100;
 
+    private ResizeUtils() {
+    }
+
     public static Binary getOriginal(BufferedImage bufferedImage) {
         byte[] bytes;
         if (bufferedImage.getWidth() > MAX_WIDTH) {

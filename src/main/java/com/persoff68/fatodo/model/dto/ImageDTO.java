@@ -1,14 +1,20 @@
 package com.persoff68.fatodo.model.dto;
 
 import com.persoff68.fatodo.config.constant.AppConstants;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
-public abstract class AbstractDTO implements Serializable {
+@AllArgsConstructor
+public class ImageDTO implements Serializable {
     protected static final long serialVersionUID = AppConstants.SERIAL_VERSION_UID;
 
-    protected String id;
+    private String filename;
+
+    @NotNull
+    private byte[] content;
 
 }

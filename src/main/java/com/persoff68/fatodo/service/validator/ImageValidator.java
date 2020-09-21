@@ -3,7 +3,6 @@ package com.persoff68.fatodo.service.validator;
 import com.persoff68.fatodo.service.exception.ImageInvalidException;
 import com.persoff68.fatodo.service.util.ImageUtils;
 import org.apache.tika.Tika;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
 
@@ -52,9 +51,8 @@ public class ImageValidator {
         }
     }
 
-    public static void validateGroupImage(MultipartFile content) {
-        BufferedImage bufferedImage = ImageUtils.getBufferedImage(content);
-        byte[] bytes = ImageUtils.getBytes(content);
+    public static void validateGroupImage(byte[] bytes) {
+        BufferedImage bufferedImage = ImageUtils.getBufferedImage(bytes);
         ImageValidator validator = new ImageValidator(bufferedImage, bytes);
         validator.validateExtension("image/jpeg");
         validator.validateDimensions(100, 500, 100, 500);

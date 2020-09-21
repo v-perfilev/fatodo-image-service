@@ -1,7 +1,7 @@
 package com.persoff68.fatodo.config.aop.cache;
 
-import com.persoff68.fatodo.config.aop.cache.annotation.RedisCacheEvict;
-import com.persoff68.fatodo.config.aop.cache.annotation.RedisCacheable;
+import com.persoff68.fatodo.config.aop.cache.annotation.CacheEvictMethod;
+import com.persoff68.fatodo.config.aop.cache.annotation.CacheableMethod;
 import com.persoff68.fatodo.config.aop.cache.util.CacheUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,35 +23,34 @@ public class CacheAspect {
 
     private final CacheManager cacheManager;
 
-    @Around("@annotation(redisCacheable)")
-    public Object doRedisCacheable(ProceedingJoinPoint pjp, RedisCacheable redisCacheable) throws Throwable {
-        Cache cache = cacheManager.getCache(redisCacheable.cacheName());
-        Object key = getKey(pjp, redisCacheable.key());
+    @Around("@annotation(cacheableMethod)")
+    public Object doCustomCacheable(ProceedingJoinPoint pjp, CacheableMethod cacheableMethod) throws Throwable {
+        Cache cache = cacheManager.getCache(cacheableMethod.cacheName());
+        Object key = getKey(pjp, cacheableMethod.key());
         if (cache != null) {
             Object object = cache.get(key, getReturnType(pjp));
             if (object != null) {
-                log.debug("Read from cache: {} - {}", redisCacheable.cacheName(), redisCacheable.key());
+                log.debug("Read from cache: {} - {}", cacheableMethod.cacheName(), cacheableMethod.key());
                 return object;
             }
         }
         Object result = pjp.proceed();
         if (cache != null) {
-            log.debug("Write to cache: {} - {}", redisCacheable.cacheName(), redisCacheable.key());
+            log.debug("Write to cache: {} - {}", cacheableMethod.cacheName(), cacheableMethod.key());
             cache.put(key, result);
         }
         return result;
     }
 
-    @Around("@annotation(redisCacheEvict)")
-    public Object doRedisCacheEvict(ProceedingJoinPoint pjp, RedisCacheEvict redisCacheEvict) throws Throwable {
-        Cache cache = cacheManager.getCache(redisCacheEvict.cacheName());
+    @Around("@annotation(cacheEvictMethod)")
+    public Object doCustomCacheEvict(ProceedingJoinPoint pjp, CacheEvictMethod cacheEvictMethod) throws Throwable {
+        Cache cache = cacheManager.getCache(cacheEvictMethod.cacheName());
         Object result = pjp.proceed();
         if (cache != null) {
-            Object key = getKeyCollection(pjp, redisCacheEvict.key());
-            Collection<?> collection = (Collection<?>) key;
-            for (Object o : collection) {
-                log.debug("Delete from cache: {} - {}", redisCacheEvict.cacheName(), redisCacheEvict.key());
-                cache.evict(o);
+            Collection<?> keyCollection = getKeyCollection(pjp, cacheEvictMethod.key());
+            for (Object key : keyCollection) {
+                log.debug("Delete from cache: {} - {}", cacheEvictMethod.cacheName(), key);
+                cache.evict(key);
             }
         }
         return result;
@@ -75,6 +74,5 @@ public class CacheAspect {
         Object[] args = pjp.getArgs();
         return CacheUtils.getCollectionValue(names, args, key);
     }
-
 
 }

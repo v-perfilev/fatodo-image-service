@@ -1,37 +1,29 @@
 package com.persoff68.fatodo.service.util;
 
 import com.persoff68.fatodo.service.exception.ImageInvalidException;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.UUID;
 
 public class ImageUtils {
     private static final String FILE_EXTENSION = ".jpeg";
 
+    private ImageUtils() {
+    }
+
     public static String generateFilename(String prefix) {
         return prefix + UUID.randomUUID() + FILE_EXTENSION;
     }
 
-    public static byte[] getBytes(MultipartFile content) {
+    public static BufferedImage getBufferedImage(byte[] bytes) {
         try {
-            return content.getBytes();
+            return ImageIO.read(new ByteArrayInputStream(bytes));
         } catch (IOException e) {
-            throw new ImageInvalidException(e.getMessage());
+            throw new ImageInvalidException("Image not valid");
         }
     }
-
-    public static BufferedImage getBufferedImage(MultipartFile content) {
-        try {
-            InputStream inputStream = content.getInputStream();
-            return ImageIO.read(inputStream);
-        } catch (IOException e) {
-            throw new ImageInvalidException(e.getMessage());
-        }
-    }
-
 
 }

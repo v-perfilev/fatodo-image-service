@@ -1,7 +1,6 @@
 package com.persoff68.fatodo.service;
 
 import com.persoff68.fatodo.model.GroupImage;
-import com.persoff68.fatodo.model.ImageFile;
 import com.persoff68.fatodo.repository.GroupImageRepository;
 import com.persoff68.fatodo.service.exception.ModelNotFoundException;
 import com.persoff68.fatodo.service.util.ImageUtils;
@@ -28,9 +27,9 @@ public class GroupImageService implements StoreService {
                 .orElseThrow(ModelNotFoundException::new);
     }
 
-    public String create(ImageFile imageFile) {
-        ImageValidator.validateGroupImage(imageFile.getContent());
-        BufferedImage bufferedImage = ImageUtils.getBufferedImage(imageFile.getContent());
+    public String create(byte[] image) {
+        ImageValidator.validateGroupImage(image);
+        BufferedImage bufferedImage = ImageUtils.getBufferedImage(image);
 
         String filename = ImageUtils.generateFilename(PREFIX);
         Binary content = ResizeUtils.getOriginal(bufferedImage);
@@ -42,15 +41,15 @@ public class GroupImageService implements StoreService {
         return filename;
     }
 
-    public String update(ImageFile imageFile) {
-        if (imageFile.getFilename() == null) {
+    public String update(String filename, byte[] image) {
+        if (filename == null) {
             throw new ModelNotFoundException();
         }
-        GroupImage groupImage = groupImageRepository.findByFilename(imageFile.getFilename())
+        GroupImage groupImage = groupImageRepository.findByFilename(filename)
                 .orElseThrow(ModelNotFoundException::new);
 
-        ImageValidator.validateGroupImage(imageFile.getContent());
-        BufferedImage bufferedImage = ImageUtils.getBufferedImage(imageFile.getContent());
+        ImageValidator.validateGroupImage(image);
+        BufferedImage bufferedImage = ImageUtils.getBufferedImage(image);
 
         Binary content = ResizeUtils.getOriginal(bufferedImage);
         Binary thumbnail = ResizeUtils.getThumbnail(bufferedImage);
@@ -59,7 +58,7 @@ public class GroupImageService implements StoreService {
         groupImage.setThumbnail(thumbnail);
         groupImageRepository.save(groupImage);
 
-        return imageFile.getFilename();
+        return filename;
     }
 
     public void delete(String filename) {
