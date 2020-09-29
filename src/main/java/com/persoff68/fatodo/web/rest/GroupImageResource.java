@@ -3,6 +3,7 @@ package com.persoff68.fatodo.web.rest;
 import com.persoff68.fatodo.model.dto.ImageDTO;
 import com.persoff68.fatodo.service.GroupImageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,9 +25,9 @@ public class GroupImageResource {
     private final GroupImageService groupImageService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> create(@RequestBody @Valid ImageDTO imageDTO) {
+    public ResponseEntity<String> create(@RequestBody ImageDTO imageDTO) {
         String name = groupImageService.create(imageDTO.getContent());
-        return ResponseEntity.ok(name);
+        return ResponseEntity.status(HttpStatus.CREATED).body(name);
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

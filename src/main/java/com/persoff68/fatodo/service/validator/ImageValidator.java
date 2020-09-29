@@ -8,15 +8,13 @@ import java.awt.image.BufferedImage;
 
 public class ImageValidator {
 
-    private static final Tika tika = new Tika();
-
     private final BufferedImage image;
     private final String format;
     private final int size;
 
     private ImageValidator(BufferedImage image, byte[] bytes) {
         this.image = image;
-        this.format = tika.detect(bytes);
+        this.format = new Tika().detect(bytes);
         this.size = bytes.length;
     }
 
