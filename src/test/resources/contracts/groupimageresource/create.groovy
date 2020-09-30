@@ -18,7 +18,7 @@ Contract.make {
         body(
                 "filename": null,
                 "content": $(
-                        consumer(any()),
+                        consumer(anyNonBlankString()),
                         producer(file("jpg-medium-square_compressed.jpg").asBytes())
                 ),
 
