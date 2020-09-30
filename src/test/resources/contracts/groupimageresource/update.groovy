@@ -17,11 +17,11 @@ Contract.make {
         }
         body(
                 "filename": $(
-                        consumer(any()),
+                        consumer(anyNonBlankString()),
                         producer("group-test_filename")
                 ),
                 "content": $(
-                        consumer(any()),
+                        consumer(anyNonBlankString()),
                         producer(file("jpg-medium-square_compressed.jpg").asBytes())
                 ),
 

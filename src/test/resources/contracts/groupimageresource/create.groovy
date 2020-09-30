@@ -16,6 +16,7 @@ Contract.make {
             )
         }
         body(
+                "filename": null,
                 "content": $(
                         consumer(any()),
                         producer(file("jpg-medium-square_compressed.jpg").asBytes())
