@@ -6,7 +6,7 @@ Contract.make {
     name 'delete group image'
     description 'should return status 200'
     request {
-        method POST()
+        method DELETE()
         url($(
                 consumer(regex('\\/api\\/group-images\\/[\\w-]+')),
                 producer("/api/group-images/group-test_filename")
