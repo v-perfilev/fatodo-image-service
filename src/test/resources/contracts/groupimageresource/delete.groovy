@@ -8,7 +8,7 @@ Contract.make {
     request {
         method DELETE()
         url($(
-                consumer(regex('\\/api\\/group-images\\/[\\w-]+')),
+                consumer(regex("/api/group-images/.+")),
                 producer("/api/group-images/group-test_filename")
         ))
         headers {

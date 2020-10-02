@@ -1,4 +1,4 @@
-package contracts.groupimageresource
+package contracts.storecontroller
 
 import org.springframework.cloud.contract.spec.Contract
 
@@ -8,7 +8,7 @@ Contract.make {
     request {
         method GET()
         url($(
-                consumer(regex('\\/api\\/store\\/[\\w-]+')),
+                consumer(regex("/api/store/.+")),
                 producer("/api/store/group-test_filename")
         ))
     }
