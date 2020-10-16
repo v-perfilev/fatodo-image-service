@@ -3,7 +3,9 @@ package com.persoff68.fatodo.contract;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.persoff68.fatodo.TestImageUtils;
 import com.persoff68.fatodo.model.GroupImage;
+import com.persoff68.fatodo.model.UserImage;
 import com.persoff68.fatodo.repository.GroupImageRepository;
+import com.persoff68.fatodo.repository.UserImageRepository;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.bson.types.Binary;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,14 +24,19 @@ public abstract class ContractBase {
     ObjectMapper objectMapper;
     @Autowired
     GroupImageRepository groupImageRepository;
+    @Autowired
+    UserImageRepository userImageRepository;
 
     @BeforeEach
     public void setup() {
         RestAssuredMockMvc.webAppContextSetup(context);
         groupImageRepository.deleteAll();
+        userImageRepository.deleteAll();
         byte[] bytes = TestImageUtils.loadMediumSquareJpg();
         GroupImage groupImage = new GroupImage("group-test_filename", new Binary(bytes), new Binary(bytes));
         groupImageRepository.save(groupImage);
+        UserImage userImage = new UserImage("user-test_filename", new Binary(bytes), new Binary(bytes));
+        userImageRepository.save(userImage);
     }
 
 }

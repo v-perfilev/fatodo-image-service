@@ -12,19 +12,19 @@ public class ImageValidator {
     private final String format;
     private final int size;
 
-    private ImageValidator(BufferedImage image, byte[] bytes) {
+    public ImageValidator(BufferedImage image, byte[] bytes) {
         this.image = image;
         this.format = new Tika().detect(bytes);
         this.size = bytes.length;
     }
 
-    private void validateSize(int minSize, int maxSize) {
+    public void validateSize(int minSize, int maxSize) {
         if (size < minSize || size > maxSize) {
             throw new ImageInvalidException("Image size validation failed");
         }
     }
 
-    private void validateDimensions(int minWidth, int maxWidth, int minHeight, int maxHeight) {
+    public void validateDimensions(int minWidth, int maxWidth, int minHeight, int maxHeight) {
         int width = image.getWidth();
         int height = image.getHeight();
         if (width < minWidth || width > maxWidth || height < minHeight || height > maxHeight) {
@@ -32,7 +32,7 @@ public class ImageValidator {
         }
     }
 
-    private void validateRatio(int x, int y) {
+    public void validateRatio(int x, int y) {
         int width = image.getWidth();
         int height = image.getHeight();
         float ratio = (float) width / height;
@@ -43,19 +43,10 @@ public class ImageValidator {
         }
     }
 
-    private void validateExtension(String requiredFormat) {
+    public void validateExtension(String requiredFormat) {
         if (!format.equalsIgnoreCase(requiredFormat)) {
             throw new ImageInvalidException("Image extension validation failed");
         }
-    }
-
-    public static void validateGroupImage(byte[] bytes) {
-        BufferedImage bufferedImage = ImageUtils.getBufferedImage(bytes);
-        ImageValidator validator = new ImageValidator(bufferedImage, bytes);
-        validator.validateExtension("image/jpeg");
-        validator.validateDimensions(100, 500, 100, 500);
-        validator.validateRatio(1, 1);
-        validator.validateSize(1024, 1024 * 512);
     }
 
 }

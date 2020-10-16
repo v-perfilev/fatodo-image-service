@@ -1,7 +1,9 @@
 package com.persoff68.fatodo.service;
 
-import com.persoff68.fatodo.model.GroupImage;
-import com.persoff68.fatodo.repository.GroupImageRepository;
+import com.persoff68.fatodo.model.UserImage;
+import com.persoff68.fatodo.model.UserImage;
+import com.persoff68.fatodo.repository.UserImageRepository;
+import com.persoff68.fatodo.repository.UserImageRepository;
 import com.persoff68.fatodo.service.exception.ModelNotFoundException;
 import com.persoff68.fatodo.service.util.ImageUtils;
 import com.persoff68.fatodo.service.util.ResizeUtils;
@@ -14,29 +16,29 @@ import java.awt.image.BufferedImage;
 
 @Service
 @RequiredArgsConstructor
-public class GroupImageService implements StoreService {
-    public static final String PREFIX = "group-";
+public class UserImageService implements StoreService {
+    public static final String PREFIX = "user-";
 
-    private final GroupImageRepository groupImageRepository;
+    private final UserImageRepository userImageRepository;
 
-    public GroupImage getByFilename(String filename) {
+    public UserImage getByFilename(String filename) {
         if (filename == null) {
             throw new ModelNotFoundException();
         }
-        return groupImageRepository.findByFilename(filename)
+        return userImageRepository.findByFilename(filename)
                 .orElseThrow(ModelNotFoundException::new);
     }
 
     public String create(byte[] image) {
-        validateGroupImage(image);
+        validateUserImage(image);
         BufferedImage bufferedImage = ImageUtils.getBufferedImage(image);
 
         String filename = ImageUtils.generateFilename(PREFIX);
         Binary content = ResizeUtils.getOriginal(bufferedImage);
         Binary thumbnail = ResizeUtils.getThumbnail(bufferedImage);
 
-        GroupImage groupImage = new GroupImage(filename, content, thumbnail);
-        groupImageRepository.save(groupImage);
+        UserImage userImage = new UserImage(filename, content, thumbnail);
+        userImageRepository.save(userImage);
 
         return filename;
     }
@@ -45,18 +47,18 @@ public class GroupImageService implements StoreService {
         if (filename == null) {
             throw new ModelNotFoundException();
         }
-        GroupImage groupImage = groupImageRepository.findByFilename(filename)
+        UserImage userImage = userImageRepository.findByFilename(filename)
                 .orElseThrow(ModelNotFoundException::new);
 
-        validateGroupImage(image);
+        validateUserImage(image);
         BufferedImage bufferedImage = ImageUtils.getBufferedImage(image);
 
         Binary content = ResizeUtils.getOriginal(bufferedImage);
         Binary thumbnail = ResizeUtils.getThumbnail(bufferedImage);
 
-        groupImage.setContent(content);
-        groupImage.setThumbnail(thumbnail);
-        groupImageRepository.save(groupImage);
+        userImage.setContent(content);
+        userImage.setThumbnail(thumbnail);
+        userImageRepository.save(userImage);
 
         return filename;
     }
@@ -65,10 +67,10 @@ public class GroupImageService implements StoreService {
         if (filename == null) {
             throw new ModelNotFoundException();
         }
-        groupImageRepository.deleteByFilename(filename);
+        userImageRepository.deleteByFilename(filename);
     }
 
-    private static void validateGroupImage(byte[] bytes) {
+    private static void validateUserImage(byte[] bytes) {
         BufferedImage bufferedImage = ImageUtils.getBufferedImage(bytes);
         ImageValidator validator = new ImageValidator(bufferedImage, bytes);
         validator.validateExtension("image/jpeg");

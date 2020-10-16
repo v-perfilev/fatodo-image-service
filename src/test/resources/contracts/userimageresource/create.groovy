@@ -1,0 +1,31 @@
+package contracts.userimageresource
+
+import org.springframework.cloud.contract.spec.Contract
+
+Contract.make {
+    name 'create user image'
+    description 'should return status 201 and filename string'
+    request {
+        method POST()
+        url("/api/user-images")
+        headers {
+            contentType applicationJson()
+            header 'Authorization': $(
+                    consumer(containing("Bearer")),
+                    producer("Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJ0ZXN0X3VzZXIiLCJhdXRob3JpdGllcyI6IlJPTEVfVVNFUiIsImlhdCI6MCwiZXhwIjozMjUwMzY3NjQwMH0.ggV38p_Fnqo2OZNtwR3NWKZhMXPd-vf4PrRxN0NmTWsHPrKwWZJSGO2dJBBPWXWs4OI6tjsNV2TM3Kf6NK92hw")
+            )
+        }
+        body(
+                "filename": null,
+                "content": $(
+                        consumer(anyNonBlankString()),
+                        producer(file("jpg-medium-square_compressed.jpg").asBytes())
+                ),
+
+        )
+    }
+    response {
+        status 201
+        body(anyNonBlankString())
+    }
+}
