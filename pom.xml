@@ -11,7 +11,7 @@
     <groupId>com.persoff68.fatodo</groupId>
     <artifactId>imageservice</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>fatodo-imageFile-service</name>
+    <name>fatodo-image-service</name>
     <description>Image service for Fatodo</description>
 
     <properties>

@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 public class ResponseUtils {
     private static final String THUMBNAIL_PREFIX = "thumbnail-";
 
+    private ResponseUtils() {
+    }
+
     public static ResponseEntity<Resource> createResponse(Binary image, String filename, boolean isThumbnail) {
         byte[] bytes = image.getData();
         ByteArrayResource resource = new ByteArrayResource(bytes);
