@@ -1,7 +1,6 @@
 package com.persoff68.fatodo.service.validator;
 
 import com.persoff68.fatodo.service.exception.ImageInvalidException;
-import com.persoff68.fatodo.service.util.ImageUtils;
 import org.apache.tika.Tika;
 
 import java.awt.image.BufferedImage;

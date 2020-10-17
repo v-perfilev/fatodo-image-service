@@ -1,8 +1,6 @@
 package com.persoff68.fatodo.service;
 
 import com.persoff68.fatodo.model.UserImage;
-import com.persoff68.fatodo.model.UserImage;
-import com.persoff68.fatodo.repository.UserImageRepository;
 import com.persoff68.fatodo.repository.UserImageRepository;
 import com.persoff68.fatodo.service.exception.ModelNotFoundException;
 import com.persoff68.fatodo.service.util.ImageUtils;
