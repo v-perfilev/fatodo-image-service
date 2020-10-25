@@ -3,7 +3,9 @@ package com.persoff68.fatodo.web.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.persoff68.fatodo.FatodoImageServiceApplication;
 import com.persoff68.fatodo.TestImageUtils;
+import com.persoff68.fatodo.builder.TestImage;
 import com.persoff68.fatodo.model.GroupImage;
+import com.persoff68.fatodo.model.Image;
 import com.persoff68.fatodo.repository.GroupImageRepository;
 import org.bson.types.Binary;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class StoreControllerIT {
     static final String ENDPOINT = "/api/store";
 
+    private static final String IMAGE_NAME = "group-image-filename";
+    private static final String NOT_EXISTING_IMAGE_NAME = "not-existing-filename";
+
     @Autowired
     WebApplicationContext context;
     @Autowired
@@ -39,14 +44,20 @@ public class StoreControllerIT {
         mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
         groupImageRepository.deleteAll();
         byte[] bytes = TestImageUtils.loadMediumSquareJpg();
-        GroupImage groupImage = new GroupImage("group-test_filename", new Binary(bytes), new Binary(bytes));
+        Image image = TestImage.defaultBuilder()
+                .id(null)
+                .filename(IMAGE_NAME)
+                .content(new Binary(bytes))
+                .thumbnail(new Binary(bytes))
+                .build();
+        GroupImage groupImage = new GroupImage(image);
         groupImageRepository.save(groupImage);
     }
 
     @Test
     @WithAnonymousUser
     void getImage_ok() throws Exception {
-        String url = ENDPOINT + "/group-test_filename";
+        String url = ENDPOINT + "/" + IMAGE_NAME;
         ResultActions resultActions = mvc.perform(get(url))
                 .andExpect(status().isOk());
         String resultString = resultActions.andReturn().getResponse().getContentAsString();
@@ -56,7 +67,7 @@ public class StoreControllerIT {
     @Test
     @WithAnonymousUser
     void getImage_notExists() throws Exception {
-        String url = ENDPOINT + "/other_filename";
+        String url = ENDPOINT + "/" + NOT_EXISTING_IMAGE_NAME;
         mvc.perform(get(url))
                 .andExpect(status().isNotFound());
     }
@@ -64,7 +75,7 @@ public class StoreControllerIT {
     @Test
     @WithAnonymousUser
     void getImageThumbnail_ok() throws Exception {
-        String url = ENDPOINT + "/group-test_filename/thumbnail";
+        String url = ENDPOINT + "/" + IMAGE_NAME + "/thumbnail";
         ResultActions resultActions = mvc.perform(get(url))
                 .andExpect(status().isOk());
         String resultString = resultActions.andReturn().getResponse().getContentAsString();
@@ -74,7 +85,7 @@ public class StoreControllerIT {
     @Test
     @WithAnonymousUser
     void getImageThumbnail_notExists() throws Exception {
-        String url = ENDPOINT + "/other_filename/thumbnail";
+        String url = ENDPOINT + "/" + NOT_EXISTING_IMAGE_NAME + "/thumbnail";
         mvc.perform(get(url))
                 .andExpect(status().isNotFound());
     }

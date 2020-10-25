@@ -9,7 +9,7 @@ Contract.make {
         method GET()
         url($(
                 consumer(regex("/api/store/.+")),
-                producer("/api/store/group-test_filename")
+                producer("/api/store/group-image-filename")
         ))
     }
     response {

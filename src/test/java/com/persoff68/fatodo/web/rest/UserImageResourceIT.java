@@ -1,14 +1,15 @@
 package com.persoff68.fatodo.web.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.persoff68.fatodo.FactoryUtils;
 import com.persoff68.fatodo.FatodoImageServiceApplication;
 import com.persoff68.fatodo.TestImageUtils;
 import com.persoff68.fatodo.annotation.WithCustomSecurityContext;
+import com.persoff68.fatodo.builder.TestImage;
+import com.persoff68.fatodo.builder.TestImageDTO;
+import com.persoff68.fatodo.model.Image;
 import com.persoff68.fatodo.model.UserImage;
 import com.persoff68.fatodo.model.dto.ImageDTO;
 import com.persoff68.fatodo.repository.UserImageRepository;
-import org.bson.types.Binary;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserImageResourceIT {
     static final String ENDPOINT = "/api/user-images";
 
+    private static final String IMAGE_NAME = "image-filename";
+    private static final String NEW_IMAGE_NAME = "new-filename";
+
     @Autowired
     WebApplicationContext context;
     @Autowired
@@ -44,14 +48,18 @@ public class UserImageResourceIT {
     void setup() {
         mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
         userImageRepository.deleteAll();
-        UserImage userImage = new UserImage("test_filename", new Binary(new byte[]{}), new Binary(new byte[]{}));
+        Image image = TestImage.defaultBuilder().id(null).filename(IMAGE_NAME).build();
+        UserImage userImage = new UserImage(image);
         userImageRepository.save(userImage);
     }
 
     @Test
     @WithCustomSecurityContext(authority = "ROLE_USER")
     void testCreate_ok() throws Exception {
-        ImageDTO dto = FactoryUtils.createImageDTO(null, TestImageUtils.loadMediumSquareJpg());
+        ImageDTO dto = TestImageDTO.defaultBuilder()
+                .filename(null)
+                .content(TestImageUtils.loadMediumSquareJpg())
+                .build();
         String requestBody = objectMapper.writeValueAsString(dto);
         ResultActions resultActions = mvc.perform(post(ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -63,7 +71,10 @@ public class UserImageResourceIT {
     @Test
     @WithCustomSecurityContext(authority = "ROLE_USER")
     void testCreate_badRequest_radio() throws Exception {
-        ImageDTO dto = FactoryUtils.createImageDTO(null, TestImageUtils.loadMediumRectangularJpg());
+        ImageDTO dto = TestImageDTO.defaultBuilder()
+                .filename(null)
+                .content(TestImageUtils.loadMediumRectangularJpg())
+                .build();
         String requestBody = objectMapper.writeValueAsString(dto);
         mvc.perform(post(ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -73,7 +84,10 @@ public class UserImageResourceIT {
     @Test
     @WithCustomSecurityContext(authority = "ROLE_USER")
     void testCreate_badRequest_dimensionSmall() throws Exception {
-        ImageDTO dto = FactoryUtils.createImageDTO(null, TestImageUtils.loadSmallSquareJpg());
+        ImageDTO dto = TestImageDTO.defaultBuilder()
+                .filename(null)
+                .content(TestImageUtils.loadSmallSquareJpg())
+                .build();
         String requestBody = objectMapper.writeValueAsString(dto);
         mvc.perform(post(ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -83,7 +97,10 @@ public class UserImageResourceIT {
     @Test
     @WithCustomSecurityContext(authority = "ROLE_USER")
     void testCreate_badRequest_dimensionBig() throws Exception {
-        ImageDTO dto = FactoryUtils.createImageDTO(null, TestImageUtils.loadBigSquareJpg());
+        ImageDTO dto = TestImageDTO.defaultBuilder()
+                .filename(null)
+                .content(TestImageUtils.loadBigSquareJpg())
+                .build();
         String requestBody = objectMapper.writeValueAsString(dto);
         mvc.perform(post(ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -93,7 +110,10 @@ public class UserImageResourceIT {
     @Test
     @WithCustomSecurityContext(authority = "ROLE_USER")
     void testCreate_badRequest_format() throws Exception {
-        ImageDTO dto = FactoryUtils.createImageDTO(null, TestImageUtils.loadMediumSquarePng());
+        ImageDTO dto = TestImageDTO.defaultBuilder()
+                .filename(null)
+                .content(TestImageUtils.loadMediumSquarePng())
+                .build();
         String requestBody = objectMapper.writeValueAsString(dto);
         mvc.perform(post(ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -103,7 +123,10 @@ public class UserImageResourceIT {
     @Test
     @WithAnonymousUser
     void testCreate_unauthorized() throws Exception {
-        ImageDTO dto = FactoryUtils.createImageDTO(null, TestImageUtils.loadMediumSquareJpg());
+        ImageDTO dto = TestImageDTO.defaultBuilder()
+                .filename(null)
+                .content(TestImageUtils.loadMediumSquareJpg())
+                .build();
         String requestBody = objectMapper.writeValueAsString(dto);
         mvc.perform(post(ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -113,7 +136,10 @@ public class UserImageResourceIT {
     @Test
     @WithCustomSecurityContext(authority = "ROLE_USER")
     void testUpdate_ok() throws Exception {
-        ImageDTO dto = FactoryUtils.createImageDTO("test_filename", TestImageUtils.loadMediumSquareJpg());
+        ImageDTO dto = TestImageDTO.defaultBuilder()
+                .filename(IMAGE_NAME)
+                .content(TestImageUtils.loadMediumSquareJpg())
+                .build();
         String requestBody = objectMapper.writeValueAsString(dto);
         ResultActions resultActions = mvc.perform(put(ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -125,7 +151,10 @@ public class UserImageResourceIT {
     @Test
     @WithCustomSecurityContext(authority = "ROLE_USER")
     void testUpdate_noFilename() throws Exception {
-        ImageDTO dto = FactoryUtils.createImageDTO(null, TestImageUtils.loadMediumSquareJpg());
+        ImageDTO dto = TestImageDTO.defaultBuilder()
+                .filename(null)
+                .content(TestImageUtils.loadMediumSquareJpg())
+                .build();
         String requestBody = objectMapper.writeValueAsString(dto);
         mvc.perform(put(ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -135,7 +164,10 @@ public class UserImageResourceIT {
     @Test
     @WithCustomSecurityContext(authority = "ROLE_USER")
     void testUpdate_notExists() throws Exception {
-        ImageDTO dto = FactoryUtils.createImageDTO("new_filename", TestImageUtils.loadMediumSquareJpg());
+        ImageDTO dto = TestImageDTO.defaultBuilder()
+                .filename(NEW_IMAGE_NAME)
+                .content(TestImageUtils.loadMediumSquareJpg())
+                .build();
         String requestBody = objectMapper.writeValueAsString(dto);
         mvc.perform(put(ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -145,7 +177,10 @@ public class UserImageResourceIT {
     @Test
     @WithAnonymousUser
     void testUpdate_unauthorized() throws Exception {
-        ImageDTO dto = FactoryUtils.createImageDTO("test_filename", TestImageUtils.loadMediumSquareJpg());
+        ImageDTO dto = TestImageDTO.defaultBuilder()
+                .filename(IMAGE_NAME)
+                .content(TestImageUtils.loadMediumSquareJpg())
+                .build();
         String requestBody = objectMapper.writeValueAsString(dto);
         mvc.perform(put(ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -155,7 +190,7 @@ public class UserImageResourceIT {
     @Test
     @WithCustomSecurityContext(authority = "ROLE_USER")
     void testDelete_ok() throws Exception {
-        String url = ENDPOINT + "/test_filename";
+        String url = ENDPOINT + "/" + IMAGE_NAME;
         mvc.perform(delete(url))
                 .andExpect(status().isOk());
     }
@@ -163,7 +198,7 @@ public class UserImageResourceIT {
     @Test
     @WithAnonymousUser
     void testDelete_unauthorized() throws Exception {
-        String url = ENDPOINT + "/test_filename";
+        String url = ENDPOINT + "/" + IMAGE_NAME;
         mvc.perform(delete(url))
                 .andExpect(status().isUnauthorized());
     }

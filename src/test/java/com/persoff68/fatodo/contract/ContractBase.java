@@ -2,7 +2,9 @@ package com.persoff68.fatodo.contract;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.persoff68.fatodo.TestImageUtils;
+import com.persoff68.fatodo.builder.TestImage;
 import com.persoff68.fatodo.model.GroupImage;
+import com.persoff68.fatodo.model.Image;
 import com.persoff68.fatodo.model.UserImage;
 import com.persoff68.fatodo.repository.GroupImageRepository;
 import com.persoff68.fatodo.repository.UserImageRepository;
@@ -18,6 +20,9 @@ import org.springframework.web.context.WebApplicationContext;
 @AutoConfigureMessageVerifier
 public abstract class ContractBase {
 
+    private static final String GROUP_IMAGE_NAME = "group-image-filename";
+    private static final String USER_IMAGE_NAME = "user-image-filename";
+
     @Autowired
     WebApplicationContext context;
     @Autowired
@@ -30,12 +35,29 @@ public abstract class ContractBase {
     @BeforeEach
     public void setup() {
         RestAssuredMockMvc.webAppContextSetup(context);
-        groupImageRepository.deleteAll();
-        userImageRepository.deleteAll();
+
         byte[] bytes = TestImageUtils.loadMediumSquareJpg();
-        GroupImage groupImage = new GroupImage("group-test_filename", new Binary(bytes), new Binary(bytes));
+
+        Image image = TestImage.defaultBuilder()
+                .id(null)
+                .filename(GROUP_IMAGE_NAME)
+                .content(new Binary(bytes))
+                .thumbnail(new Binary(bytes))
+                .build();
+        GroupImage groupImage = new GroupImage(image);
+
+        groupImageRepository.deleteAll();
         groupImageRepository.save(groupImage);
-        UserImage userImage = new UserImage("user-test_filename", new Binary(bytes), new Binary(bytes));
+
+        image = TestImage.defaultBuilder()
+                .id(null)
+                .filename(USER_IMAGE_NAME)
+                .content(new Binary(bytes))
+                .thumbnail(new Binary(bytes))
+                .build();
+        UserImage userImage = new UserImage(image);
+
+        userImageRepository.deleteAll();
         userImageRepository.save(userImage);
     }
 
