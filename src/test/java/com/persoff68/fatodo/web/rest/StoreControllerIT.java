@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = FatodoImageServiceApplication.class)
-public class StoreControllerIT {
+class StoreControllerIT {
     static final String ENDPOINT = "/api/store";
 
     private static final String IMAGE_NAME = "group-image-filename";

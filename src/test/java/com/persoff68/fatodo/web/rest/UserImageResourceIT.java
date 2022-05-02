@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = FatodoImageServiceApplication.class)
-public class UserImageResourceIT {
+class UserImageResourceIT {
     static final String ENDPOINT = "/api/user-images";
 
     private static final String IMAGE_NAME = "image-filename";
