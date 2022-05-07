@@ -10,29 +10,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class ResizeUtils {
-    private static final int MAX_WIDTH = 1000;
+    private static final int USUAL_WIDTH = 1000;
     private static final int THUMBNAIL_WIDTH = 100;
 
     private ResizeUtils() {
     }
 
     public static Binary getOriginal(BufferedImage bufferedImage) {
-        byte[] bytes;
-        if (bufferedImage.getWidth() > MAX_WIDTH) {
-            bytes = getResizedInByte(bufferedImage, MAX_WIDTH);
-        } else {
-            bytes = getOriginalInByte(bufferedImage);
-        }
+        byte[] bytes = getResizedInByte(bufferedImage, USUAL_WIDTH);
         return new Binary(bytes);
     }
 
     public static Binary getThumbnail(BufferedImage bufferedImage) {
         byte[] bytes = getResizedInByte(bufferedImage, THUMBNAIL_WIDTH);
         return new Binary(bytes);
-    }
-
-    private static byte[] getOriginalInByte(BufferedImage bufferedImage) {
-        return convertBufferedImageToByteArray(bufferedImage);
     }
 
     private static byte[] getResizedInByte(BufferedImage bufferedImage, int newWidth) {
