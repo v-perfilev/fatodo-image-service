@@ -1,4 +1,4 @@
-package contracts.groupimageresource
+package contracts.groupimagecontroller
 
 import org.springframework.cloud.contract.spec.Contract
 
@@ -7,7 +7,7 @@ Contract.make {
     description 'should return status 200 and filename string'
     request {
         method PUT()
-        url("/api/group-images")
+        url("/api/group-image")
         headers {
             contentType applicationJson()
             header 'Authorization': $(

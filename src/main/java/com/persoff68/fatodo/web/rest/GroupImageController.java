@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(GroupImageResource.ENDPOINT)
+@RequestMapping(GroupImageController.ENDPOINT)
 @RequiredArgsConstructor
-public class GroupImageResource {
-    static final String ENDPOINT = "/api/group-images";
+public class GroupImageController {
+    static final String ENDPOINT = "/api/group-image";
 
     private final GroupImageService groupImageService;
 

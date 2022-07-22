@@ -1,24 +1,31 @@
-package contracts.groupimageresource
+package contracts.userimagecontroller
 
 import org.springframework.cloud.contract.spec.Contract
 
 Contract.make {
-    name 'delete group image'
-    description 'should return status 200'
+    name 'create user image'
+    description 'should return status 201 and filename string'
     request {
-        method DELETE()
-        url($(
-                consumer(regex("/api/group-images/.+")),
-                producer("/api/group-images/group-image-filename")
-        ))
+        method POST()
+        url("/api/user-image")
         headers {
+            contentType applicationJson()
             header 'Authorization': $(
                     consumer(containing("Bearer")),
                     producer("Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4ZjlhN2NhZS03M2M4LTRhZDYtYjEzNS01YmQxMDliNTFkMmUiLCJ1c2VybmFtZSI6InRlc3RfdXNlciIsImF1dGhvcml0aWVzIjoiUk9MRV9VU0VSIiwiaWF0IjowLCJleHAiOjMyNTAzNjc2NDAwfQ.Go0MIqfjREMHOLeqoX2Ej3DbeSG7ZxlL4UAvcxqNeO-RgrKUCrgEu77Ty1vgR_upxVGDAWZS-JfuSYPHSRtv-w")
             )
         }
+        body(
+                "filename": null,
+                "content": $(
+                        consumer(anyNonBlankString()),
+                        producer(file("jpg-medium-square_compressed.jpg").asBytes())
+                ),
+
+        )
     }
     response {
-        status 200
+        status 201
+        body(anyNonBlankString())
     }
 }

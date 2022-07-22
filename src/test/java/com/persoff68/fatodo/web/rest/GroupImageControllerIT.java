@@ -29,8 +29,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = FatodoImageServiceApplication.class)
-class GroupImageResourceIT {
-    static final String ENDPOINT = "/api/group-images";
+class GroupImageControllerIT {
+    static final String ENDPOINT = "/api/group-image";
 
     private static final String IMAGE_NAME = "image-filename";
     private static final String NEW_IMAGE_NAME = "new-filename";

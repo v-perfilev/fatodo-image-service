@@ -1,15 +1,15 @@
-package contracts.userimageresource
+package contracts.groupimagecontroller
 
 import org.springframework.cloud.contract.spec.Contract
 
 Contract.make {
-    name 'delete user image'
+    name 'delete group image'
     description 'should return status 200'
     request {
         method DELETE()
         url($(
-                consumer(regex("/api/user-images/.+")),
-                producer("/api/user-images/user-image-filename")
+                consumer(regex("/api/group-image/.+")),
+                producer("/api/group-image/group-image-filename")
         ))
         headers {
             header 'Authorization': $(

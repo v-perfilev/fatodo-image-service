@@ -1,4 +1,4 @@
-package contracts.userimageresource
+package contracts.userimagecontroller
 
 import org.springframework.cloud.contract.spec.Contract
 
@@ -7,7 +7,7 @@ Contract.make {
     description 'should return status 200 and filename string'
     request {
         method PUT()
-        url("/api/user-images")
+        url("/api/user-image")
         headers {
             contentType applicationJson()
             header 'Authorization': $(

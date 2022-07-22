@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(UserImageResource.ENDPOINT)
+@RequestMapping(UserImageController.ENDPOINT)
 @RequiredArgsConstructor
-public class UserImageResource {
-    static final String ENDPOINT = "/api/user-images";
+public class UserImageController {
+    static final String ENDPOINT = "/api/user-image";
 
     private final UserImageService userImageService;
 
