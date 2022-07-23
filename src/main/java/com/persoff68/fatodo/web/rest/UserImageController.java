@@ -4,7 +4,6 @@ import com.persoff68.fatodo.model.dto.ImageDTO;
 import com.persoff68.fatodo.service.UserImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,13 +23,13 @@ public class UserImageController {
 
     private final UserImageService userImageService;
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<String> create(@RequestBody ImageDTO imageDTO) {
         String name = userImageService.create(imageDTO.getContent());
         return ResponseEntity.status(HttpStatus.CREATED).body(name);
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping
     public ResponseEntity<String> update(@RequestBody @Valid ImageDTO imageDTO) {
         String name = userImageService.update(imageDTO.getFilename(), imageDTO.getContent());
         return ResponseEntity.ok(name);
