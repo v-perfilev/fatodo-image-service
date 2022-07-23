@@ -10,6 +10,7 @@ import com.persoff68.fatodo.repository.GroupImageRepository;
 import com.persoff68.fatodo.repository.UserImageRepository;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.bson.types.Binary;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMessageVerifier
-public abstract class ContractBase {
+class ContractBase {
 
     private static final String GROUP_IMAGE_NAME = "group-image-filename";
     private static final String USER_IMAGE_NAME = "user-image-filename";
@@ -33,7 +34,7 @@ public abstract class ContractBase {
     UserImageRepository userImageRepository;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         RestAssuredMockMvc.webAppContextSetup(context);
 
         byte[] bytes = TestImageUtils.loadMediumSquareJpg();
@@ -46,7 +47,6 @@ public abstract class ContractBase {
                 .build();
         GroupImage groupImage = new GroupImage(image);
 
-        groupImageRepository.deleteAll();
         groupImageRepository.save(groupImage);
 
         image = TestImage.defaultBuilder()
@@ -57,8 +57,13 @@ public abstract class ContractBase {
                 .build();
         UserImage userImage = new UserImage(image);
 
-        userImageRepository.deleteAll();
         userImageRepository.save(userImage);
+    }
+
+    @AfterEach
+    void cleanup() {
+        groupImageRepository.deleteAll();
+        userImageRepository.deleteAll();
     }
 
 }
